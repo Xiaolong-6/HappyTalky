@@ -26,14 +26,14 @@ class CallRoutePolicyTest {
     }
 
     @Test
-    fun cellularPrefersTalk() {
-        assertFalse(
+    fun remoteCellularAllowsCallWhenConnected() {
+        assertTrue(
             CallRoutePolicy.canStartCall(
                 PeerConnectionState.CONNECTED,
                 PeerRoute.REMOTE_CELLULAR
             )
         )
-        assertTrue(
+        assertFalse(
             CallRoutePolicy.preferTalk(
                 PeerRoute.REMOTE_CELLULAR
             )
@@ -41,16 +41,35 @@ class CallRoutePolicyTest {
     }
 
     @Test
-    fun uncertainRemotePrefersTalk() {
-        assertFalse(
+    fun remoteInternetAllowsCallWhenConnected() {
+        assertTrue(
             CallRoutePolicy.canStartCall(
                 PeerConnectionState.CONNECTED,
                 PeerRoute.REMOTE_INTERNET
             )
         )
-        assertTrue(
+        assertFalse(
             CallRoutePolicy.preferTalk(
                 PeerRoute.REMOTE_INTERNET
+            )
+        )
+    }
+
+    @Test
+    fun unavailableRoutesPreferTalk() {
+        assertTrue(
+            CallRoutePolicy.preferTalk(
+                PeerRoute.OFFLINE
+            )
+        )
+        assertTrue(
+            CallRoutePolicy.preferTalk(
+                PeerRoute.RECONNECTING
+            )
+        )
+        assertTrue(
+            CallRoutePolicy.preferTalk(
+                PeerRoute.UNKNOWN
             )
         )
     }
@@ -61,6 +80,12 @@ class CallRoutePolicyTest {
             CallRoutePolicy.canStartCall(
                 PeerConnectionState.DISCONNECTED,
                 PeerRoute.NEARBY_DIRECT
+            )
+        )
+        assertFalse(
+            CallRoutePolicy.canStartCall(
+                PeerConnectionState.DISCONNECTED,
+                PeerRoute.REMOTE_CELLULAR
             )
         )
     }

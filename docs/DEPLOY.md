@@ -156,15 +156,25 @@ When the peer is remotely reachable and the local active route is Wi-Fi:
 - CALL is available;
 - TALK remains the safer fallback for an unstable link.
 
-### Cellular / uncertain remote route
+### Remote cellular / unclassified internet
 
-For a remote peer while the local active route is cellular, or when the remote route cannot be classified strongly enough:
+For a remote peer while the local active route is cellular, or when the local route cannot be classified more specifically:
 
-- CALL is disabled for new sessions;
-- TALK remains available;
-- UI recommends TALK.
+- the peer must first be reported reachable by the HappyTalky Data Layer capability;
+- CALL is available for new sessions;
+- TALK remains available as the more tolerant fallback for an unstable link;
+- the UI must not report Offline merely because the Phone is using cellular data.
 
-This is intentional: the current live implementation uses a continuous Data Layer `ChannelClient`, while TALK uses persistent DataItem/Asset synchronization.
+Regression acceptance case:
+
+1. Put the Phone on carrier data only and move the Watch out of Bluetooth range.
+2. Keep the Watch connected to working Wi-Fi.
+3. Verify the Phone reports the Watch as a reachable remote peer rather than disabling CALL because the Phone is on cellular.
+4. Start a normal CALL and verify signaling and live audio can connect.
+5. Repeat with a locked Priority CALL when `priority_locked_call_v1` is advertised.
+6. Break the Watch network entirely and verify the peer eventually becomes Offline and new CALL is then disabled.
+
+The route label describes the local endpoint's active transport only. It must not be used to infer the remote Watch's Wi-Fi/LTE last mile or to reject an otherwise reachable Data Layer route.
 
 ### TALK privacy and history
 
