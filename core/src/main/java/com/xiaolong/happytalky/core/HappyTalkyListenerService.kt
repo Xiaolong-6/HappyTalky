@@ -19,6 +19,11 @@ class HappyTalkyListenerService : WearableListenerService() {
         if (payload.isBlank()) return
 
         when (messageEvent.path) {
+            Protocol.DEVICE_INFO_REQUEST -> {
+                DataLayerTransport(this)
+                    .publishDeviceInfo()
+            }
+
             Protocol.PROXIMITY_START ->
                 receiveProximityStart(payload)
 
@@ -54,6 +59,7 @@ class HappyTalkyListenerService : WearableListenerService() {
         DataLayerTransport(this)
             .also {
                 it.publishDeviceInfo()
+                it.requestPeerDeviceInfo()
             }
             .refreshPeerConnection { state, _ ->
                 if (
