@@ -37,6 +37,8 @@ The Store APIs are currently synchronous so the existing UI/state machine can re
 
 TEXT uses a stable UUID and is stored directly in Room. Outgoing text is initially `LOCAL`. If `DataClient.putDataItem()` accepts it while the peer is reachable, the UI may label the local send attempt `SENT`; if the peer is offline it remains `QUEUED` for later synchronization. Neither state claims remote receipt. HappyTalky does not label an outgoing message Delivered or Read without an explicit receiver acknowledgement. A reachable peer may send TEXT while device-info metadata is still refreshing; offline queueing requires previously confirmed `text_v1` support.
 
+Watch TEXT read-aloud is entirely local presentation behavior. Long-pressing a TEXT row toggles Android `TextToSpeech` for that message, uses the Watch's configured locale/voice when available, and exposes the currently speaking row visually. `QUEUE_FLUSH` semantics ensure a newly selected message replaces the previous utterance. The controller stops and releases speech across Inbox exit/activity stop and yields immediately to TALK playback/recording or any non-idle CALL state. No TTS state or audio is synchronized to Phone.
+
 ## Companion discovery
 
 The phone and watch advertise different static Wear OS capabilities:
