@@ -1,6 +1,6 @@
-# Wear OS captive portal proof of concept
+# Experimental: Wear OS captive portal proof of concept
 
-Originally developed on: `experiment/wear-captive-portal-poc`; now integrated into the mainline codebase as a debug-only, hardware-unverified PoC.
+Originally developed on: `experiment/wear-captive-portal-poc`; now integrated into the mainline codebase as a debug-only PoC. Current validation status is tracked in [VALIDATION.md](VALIDATION.md).
 
 ## Goal
 
@@ -50,8 +50,8 @@ Then:
 5. If a supported confirmation form is detected, review the venue terms through the venue-provided page/signage and tap the shown confirmation action.
 6. Success means the Watch itself can reach the 204 probe through that Wi-Fi network.
 
-## What still requires a physical Pixel Watch
+## Hardware gate
 
-A CI build can validate compilation and HTML parser behavior. It cannot establish whether a Pixel Watch 4 Wear OS build keeps an unvalidated captive Wi-Fi network attached long enough for an ordinary application to complete the transaction.
+A CI build can validate compilation and HTML parser behavior. It cannot establish whether the target Wear OS device keeps an unvalidated captive Wi-Fi network attached long enough for an ordinary application to complete the transaction.
 
-That physical-device behavior is the main go/no-go question for the next step.
+That physical-device behavior remains the main go/no-go question. The current status belongs in [VALIDATION.md](VALIDATION.md) so this experimental design note does not become a stale hardware claim.
