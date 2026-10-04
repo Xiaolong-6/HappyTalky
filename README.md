@@ -26,27 +26,13 @@ Phone and Watch keep the child-facing surface compact while sharing protocol and
 
 These images are generated from the checked-in Compose screenshot suite on current `main`.
 
-<table>
-  <tr>
-    <td align="center"><strong>Phone conversation</strong></td>
-    <td align="center"><strong>Find Watch</strong></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="docs/images/readme/phone-conversation.webp" width="260" alt="HappyTalky phone conversation UI"></td>
-    <td align="center"><img src="docs/images/readme/phone-find-watch.webp" width="260" alt="HappyTalky Find Watch UI"></td>
-  </tr>
-</table>
+| Phone conversation | Find Watch |
+| :---: | :---: |
+| ![HappyTalky phone conversation UI](./docs/images/readme/phone-conversation.webp) | ![HappyTalky Find Watch UI](./docs/images/readme/phone-find-watch.webp) |
 
-<table>
-  <tr>
-    <td align="center"><strong>Watch home</strong></td>
-    <td align="center"><strong>TEXT read-aloud</strong></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="docs/images/readme/watch-home.webp" width="220" alt="HappyTalky Watch home UI"></td>
-    <td align="center"><img src="docs/images/readme/watch-read-aloud.webp" width="220" alt="HappyTalky Watch TEXT read-aloud UI"></td>
-  </tr>
-</table>
+| Watch home | TEXT read-aloud |
+| :---: | :---: |
+| ![HappyTalky Watch home UI](./docs/images/readme/watch-home.webp) | ![HappyTalky Watch TEXT read-aloud UI](./docs/images/readme/watch-read-aloud.webp) |
 
 ## Connectivity model
 
