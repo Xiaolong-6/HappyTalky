@@ -262,6 +262,7 @@ fun WatchLockedPriorityLiveScreenshot() {
             onTalkFinish = {},
             onTalkCancel = {},
             onPlay = {},
+            openInbox = true,
         )
     }
 }

@@ -344,6 +344,10 @@ abstract class HappyTalkyActivity : ComponentActivity() {
     protected fun sendText(
         rawText: String
     ) {
+        if (lockedPriorityInteractionBlocked()) {
+            return
+        }
+
         val peerInfo =
             peerInfo()
         val connection =
@@ -580,6 +584,10 @@ abstract class HappyTalkyActivity : ComponentActivity() {
     protected fun playMessage(
         message: VoiceMessage
     ) {
+        if (hasAnyCallState()) {
+            return
+        }
+
         AudioPlayer.play(
             this,
             message.file,
@@ -939,6 +947,10 @@ abstract class HappyTalkyActivity : ComponentActivity() {
         StateStore.setStatus(this, "Call ended")
         AlertController.stop(this)
         LiveCallAudio.stop(this)
+        CallHaptics.ended(
+            this,
+            callId
+        )
         LiveCallService.stop(this)
         refreshUiState()
 
@@ -1180,6 +1192,11 @@ abstract class HappyTalkyActivity : ComponentActivity() {
         StateStore.incomingCall(this) != null ||
             StateStore.outgoingCall(this) != null ||
             StateStore.activeCall(this) != null
+
+    private fun lockedPriorityInteractionBlocked(): Boolean =
+        role == EndpointRole.WATCH &&
+            StateStore.priorityLocked(this) &&
+            hasAnyCallState()
 
     private fun updateIncomingPresentation(
         incoming: Boolean =

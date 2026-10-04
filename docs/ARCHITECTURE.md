@@ -103,6 +103,7 @@ Locked Priority CALL is a separate immediate Phone-to-Watch request. It is not a
 - Watch does not expose an opt-out switch for locked Priority. The legacy `PriorityCallSettings` / `priorityAutoAnswer` field remains only for compatibility with the older `/happytalky/call/priority` path; it does not gate `/happytalky/call/priority-locked`.
 - A locked Priority incoming state has no Decline action and no ordinary missed-call timeout. The Watch call screen shows the locked state without NO/END controls.
 - Once connected, the Watch cannot normally terminate a locked Priority call through Compose UI, notification actions, `CallActionReceiver`, or the foreground-service notification. The Phone remains allowed to cancel a pending request or end an active call.
+- Locked Priority also owns the Watch interaction surface while incoming/connecting/live/reconnecting: Inbox, TEXT compose/TTS, TALK recording/playback, Find Phone, and history actions cannot take focus or start competing audio. Core guards reject Watch TEXT and TALK playback if an already-open secondary surface tries to complete an action during the locked call.
 - If Phone CANCEL races with Watch auto-answer, Watch accepts the Phone cancellation even after the local state has already moved from incoming to active.
 - Route failure, process/system failure, or reconnect timeout can still terminate the call and persist `DISCONNECTED`.
 - Android 14+ treats `RECORD_AUDIO` as a while-in-use permission, so a background Data Layer listener does not start a microphone FGS directly. Locked Priority instead registers an incoming VoIP call through AndroidX Core-Telecom. Telecom owns the platform call lifecycle and foreground call execution; after `answer()` succeeds, HappyTalky starts its existing Data Layer PCM transport. The shared Wear `LiveCallService` declares both `microphone` and `phoneCall`; ordinary CALL starts it explicitly as `microphone`, while a Telecom-managed locked Priority session starts it explicitly as `phoneCall`. The visible Watch Activity path remains a fallback when Telecom is unavailable or cannot add the call.
@@ -120,6 +121,8 @@ INCOMING_RINGING -> ANSWERED | DECLINED | CANCELLED | MISSED
 LIVE -> RECONNECTING -> LIVE
 LIVE/RECONNECTING -> ENDED | DISCONNECTED
 ~~~
+
+When the PCM channel actually attaches, both endpoints emit one short connection haptic for that call ID. A call that reached live audio emits a distinct end haptic when it terminates locally, remotely, or through a disconnect/failure path. Reconnection of the same call ID does not replay the connection haptic.
 
 Locked Priority adds a distinct path:
 
@@ -291,8 +294,8 @@ Wear Material 3 presents a shorter wrist-first loop:
 - TEXT, TALK and CALL rows are interleaved by timestamp; every persisted row can be swiped left to reveal Delete, with a short type-specific confirmation. Deletion is local history management; TEXT/CALL deletion is not a remote recall operation, while TALK deletion also removes its local audio file;
 - persisted CALL events are interleaved with TEXT/TALK by timestamp, while the latest CALL is still summarized on the home screen;
 - locked Priority incoming presentation is visually distinct, exposes no Decline control, and uses Core-Telecom for background auto-answer with a visible-Activity fallback;
-- during an active locked Priority call the Watch shows the Priority state but no local END control;
-- a fixed compact Message composer launches the system RemoteInput/IME with emoji and dictation support.
+- during any non-idle locked Priority state the Watch shows a dedicated non-interactive Priority screen; the normal home/Inbox controls are not rendered until the call returns to READY;
+- a fixed compact Message composer launches the system RemoteInput/IME with emoji and dictation support when no locked Priority interaction lock is active.
 
 Bulk history management and secondary explanation stay on the phone.
 

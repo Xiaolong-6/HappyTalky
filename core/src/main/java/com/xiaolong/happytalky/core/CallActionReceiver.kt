@@ -155,6 +155,10 @@ class CallActionReceiver : BroadcastReceiver() {
         )
         AlertController.stop(context)
         LiveCallAudio.stop(context)
+        CallHaptics.ended(
+            context,
+            callId
+        )
         LiveCallService.stop(context)
         EventBus.notifyStateChanged(context)
 

@@ -149,7 +149,11 @@ object LiveCallAudio {
                 ).addOnSuccessListener { opened ->
                     executor.execute {
                         val attached =
-                            attach(appContext, opened)
+                            attach(
+                                appContext,
+                                opened,
+                                callId
+                            )
                         starting.set(false)
                         callback(attached)
                     }
@@ -173,10 +177,25 @@ object LiveCallAudio {
             return
         }
 
+        val callId =
+            incoming.path
+                .removePrefix(
+                    Protocol.CALL_AUDIO_PREFIX
+                )
+        if (callId.isBlank()) {
+            Wearable.getChannelClient(context)
+                .close(incoming)
+            return
+        }
+
         starting.set(true)
         executor.execute {
             val attached =
-                attach(context.applicationContext, incoming)
+                attach(
+                    context.applicationContext,
+                    incoming,
+                    callId
+                )
             starting.set(false)
 
             if (!attached) {
@@ -187,7 +206,8 @@ object LiveCallAudio {
 
     private fun attach(
         context: Context,
-        opened: ChannelClient.Channel
+        opened: ChannelClient.Channel,
+        callId: String
     ): Boolean {
         return try {
             val channelClient =
@@ -337,6 +357,16 @@ object LiveCallAudio {
 
             audioTrack.play()
             audioRecord.startRecording()
+
+            if (
+                StateStore.activeCall(context) ==
+                    callId
+            ) {
+                CallHaptics.connected(
+                    context,
+                    callId
+                )
+            }
 
             StateStore.clearReconnectWindow(context)
             StateStore.setPeerConnection(
