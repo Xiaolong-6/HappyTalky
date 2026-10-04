@@ -1,6 +1,8 @@
 # Deploy HappyTalky
 
-Current `main` app version: **0.3.2** (`versionCode 5`) on both Phone and Watch.
+HappyTalky installs as two matching APKs built from the same commit. The authoritative app version is defined in `mobile/build.gradle.kts` and `wear/build.gradle.kts`; this document intentionally does not duplicate mutable version metadata.
+
+Current CI-versus-hardware evidence is tracked separately in [VALIDATION.md](VALIDATION.md).
 
 HappyTalky installs as two APKs with the same application ID:
 
@@ -136,8 +138,9 @@ For incoming normal CALL, Android may also control whether full-screen call noti
 4. Verify Watch has no Decline/END control in the activity, incoming notification, or active-call notification.
 5. End the call from Phone and verify both endpoints return to idle and record Priority history.
 6. Start another locked Priority call and cancel it from Phone during connection. Repeat while Watch is transitioning into active state; verify the Watch still closes the call and does not leave an orphan live state.
-7. Background HappyTalky on Watch and start locked Priority. Verify the persistent Priority notification appears immediately. Because Android microphone permission is while-in-use, verify audio does not start until HappyTalky becomes foreground, then verify auto-connect occurs.
-8. During an active locked Priority call, interrupt the route long enough to exceed reconnect grace and verify `DISCONNECTED` is still allowed as the failure exit.
+7. Background HappyTalky on Watch and start locked Priority. Verify the persistent Priority/call presentation appears and, on the supported AndroidX Core-Telecom path, the Watch answers and connects without manually opening HappyTalky. The background Data Layer listener must not directly start a microphone foreground service; Telecom owns the platform call lifecycle before HappyTalky starts its PCM transport.
+8. If Core-Telecom is unavailable or rejects the call, verify the visible-Activity fallback remains usable instead of silently claiming background audio.
+9. During an active locked Priority call, interrupt the route long enough to exceed reconnect grace and verify `DISCONNECTED` is still allowed as the failure exit.
 
 ### Route change / reconnect
 
