@@ -208,15 +208,17 @@ The route label describes the local endpoint's active transport only. It must no
 ### TEXT and unified timeline
 
 1. With the peer reachable, send TEXT from Phone and verify it appears in the same timeline as TALK and CALL events.
-2. On Watch, open Inbox and launch the compact Message composer; verify entry is delegated to the Wear OS system RemoteInput/IME rather than an in-app phone-style keyboard.
-3. Make the peer unavailable and send TEXT only after the cached peer advertises `text_v1`; verify the local row shows **Queued**, not Delivered/Read.
-4. Restore connectivity and verify the queued DataItem synchronizes without creating a duplicate row or duplicate notification.
-5. Open Watch Inbox and verify incoming TEXT is marked read locally; confirm TALK still requires playback completion before its unread state clears.
-6. Long-press a TEXT row and verify the Watch gives long-press haptic feedback, shows the read-aloud indicator, and speaks the message through the local TTS engine.
-7. Long-press the same TEXT row again and verify speech stops. Start it again, then long-press a different TEXT row and verify the second message replaces the first.
-8. While a message is speaking, leave Inbox, start TALK/voice playback, or start/receive CALL; verify TTS stops immediately and does not overlap communication audio.
-9. Swipe a TEXT row horizontally while it is not being long-pressed and verify the existing Delete reveal still works without triggering TTS.
-10. Delete TEXT and CALL rows locally on Watch and verify this behaves as local history management, not remote recall. Delete a TALK row and verify its local audio file is removed as well.
+2. On Phone, long-press and drag across a TEXT message body; verify Android text selection handles appear and Copy works without selecting the sender/timestamp metadata.
+3. Background the receiving Phone, send a new TEXT or TALK from Watch, and verify the Phone produces an audible notification plus vibration in addition to the status-bar notification. If the channel has been manually muted in Android settings, verify the app does not override that user choice.
+4. On Watch, open Inbox and launch the compact Message composer; verify entry is delegated to the Wear OS system RemoteInput/IME rather than an in-app phone-style keyboard.
+5. Make the peer unavailable and send TEXT only after the cached peer advertises `text_v1`; verify the local row shows **Queued**, not Delivered/Read.
+6. Restore connectivity and verify the queued DataItem synchronizes without creating a duplicate row or duplicate notification.
+7. Open Watch Inbox and verify incoming TEXT is marked read locally; confirm TALK still requires playback completion before its unread state clears.
+8. Long-press a TEXT row and verify the Watch gives long-press haptic feedback, shows the read-aloud indicator, and speaks the message through the local TTS engine.
+9. Long-press the same TEXT row again and verify speech stops. Start it again, then long-press a different TEXT row and verify the second message replaces the first.
+10. While a message is speaking, leave Inbox, start TALK/voice playback, or start/receive CALL; verify TTS stops immediately and does not overlap communication audio.
+11. Swipe a TEXT row horizontally while it is not being long-pressed and verify the existing Delete reveal still works without triggering TTS.
+12. Delete TEXT and CALL rows locally on Watch and verify this behaves as local history management, not remote recall. Delete a TALK row and verify its local audio file is removed as well.
 
 ## Build locally
 

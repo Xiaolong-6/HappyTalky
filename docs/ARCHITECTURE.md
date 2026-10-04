@@ -217,6 +217,8 @@ The payload carries stable ID, origin role, creation time and UTF-8 text. Text i
 
 A receiving endpoint performs idempotent insert-by-ID, consumes the synchronized DataItem, updates the shared timeline, and posts the same message notification family used by TALK. Replayed DataItems are deleted without producing duplicate user notifications.
 
+On Phone, unread TALK/TEXT uses an importance-high message notification channel with the system default notification sound and vibration enabled. Channel IDs are versioned when app-defined alert defaults change because Android persists a channel's audible/haptic behavior after first creation; the user's system notification settings remain authoritative.
+
 Phone uses a Material 3 single-line composer with IME Send and a quick emoji affordance.
 
 Wear keeps only a compact fixed composer in Inbox. Tapping it launches the system Wear RemoteInput flow through `androidx.wear:wear-input`, enabling dictation, emoji, predefined choices and the system IME. HappyTalky does not attempt to render a phone-style keyboard on a 192 dp round screen.
@@ -264,6 +266,7 @@ Compose Material 3 follows a voice-messenger information architecture:
 
 - compact conversation header with peer reachability and CALL/TALK availability;
 - one chronological conversation timeline containing TEXT, TALK and persisted CALL events;
+- TEXT message bodies on Phone are selectable/copyable without including sender/timestamp metadata in the selection surface;
 - incoming TALK bubbles on the left and outgoing TALK bubbles on the right;
 - tap to play, with duration and timestamp shown in the bubble;
 - long-press any TALK to enter multi-selection; the temporary top bar provides select-all and delete;
