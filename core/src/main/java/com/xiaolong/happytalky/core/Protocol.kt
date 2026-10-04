@@ -16,6 +16,7 @@ object Protocol {
     const val VOICE_PREFIX = "$BASE/voice/"
     const val MESSAGE_PREFIX = "$BASE/message/"
     const val DEVICE_INFO_PREFIX = "$BASE/device-info/"
+    const val DEVICE_INFO_REQUEST = "$BASE/device-info/request"
     const val PROXIMITY_START = "$BASE/proximity/start"
     const val PROXIMITY_STOP = "$BASE/proximity/stop"
     const val PROXIMITY_READY = "$BASE/proximity/ready"
