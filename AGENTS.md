@@ -18,7 +18,7 @@ Minimum behavior validation:
 
 ~~~text
 node --test .github/scripts/cleanup-debug-releases.test.cjs
-gradle :core:testDebugUnitTest :mobile:assembleDebug :wear:assembleDebug
+gradle :core:testDebugUnitTest :wear:testDebugUnitTest :mobile:assembleDebug :wear:assembleDebug
 ~~~
 
 For UI changes, also render the checked-in screenshot suite before considering the work complete:
@@ -36,7 +36,9 @@ Any change to CALL/TALK state transitions should be tested on both roles because
 
 ## Documentation policy
 
-- Treat `README.md`, `docs/ARCHITECTURE.md`, `docs/DEPLOY.md`, `docs/UI_GUIDELINES.md`, and `dist/README.md` as current-state documentation.
+- Treat `README.md`, `docs/README.md`, `docs/ARCHITECTURE.md`, `docs/DEPLOY.md`, `docs/VALIDATION.md`, `docs/UI_GUIDELINES.md`, and `dist/README.md` as current-state documentation.
 - Keep PR-specific closure notes only as historical records and label them clearly; do not let old baseline commits or pre-merge checklists read like current requirements.
-- Update the relevant canonical document in the same change whenever protocol behavior, permissions, UI interaction, build/deploy steps, or release lifecycle changes.
+- Update the relevant canonical document in the same change whenever protocol behavior, permissions, UI interaction, build/deploy steps, validation evidence, or release lifecycle changes.
+- Keep mutable CI/physical-device pass/fail status in `docs/VALIDATION.md`. If a code change invalidates previous device evidence, mark that row `Retest pending` in the same PR instead of leaving an old pass claim elsewhere.
+- Do not duplicate the current app version in prose documentation; `mobile/build.gradle.kts` and `wear/build.gradle.kts` are the source of truth.
 - For Android/Wear UI work, re-check current official Android documentation before implementation; do not assume a previously recorded library version is still the latest.

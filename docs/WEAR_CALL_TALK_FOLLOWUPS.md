@@ -1,6 +1,6 @@
 # Historical: Wear CALL / TALK follow-up closure
 
-> Historical implementation/closure note. It records how an older follow-up was closed; it is not the canonical current behavior specification. Use [ARCHITECTURE.md](ARCHITECTURE.md), [DEPLOY.md](DEPLOY.md), and [UI_GUIDELINES.md](UI_GUIDELINES.md) for current behavior and validation.
+> Historical implementation/closure note. It records how an older follow-up was closed; it is not the canonical current behavior specification. Use [ARCHITECTURE.md](ARCHITECTURE.md), [DEPLOY.md](DEPLOY.md), [VALIDATION.md](VALIDATION.md), and [UI_GUIDELINES.md](UI_GUIDELINES.md) for current behavior and evidence.
 
 Baseline: current `main` after conversation, device-identity, Priority CALL, and TEXT/timeline work.
 
@@ -41,7 +41,7 @@ The Wear build therefore:
 - keeps the dedicated in-app call screen when HappyTalky is already foregrounded;
 - publishes active Watch CALL as a Wear `OngoingActivity` for a one-tap return path.
 
-The original v1 Priority path kept its foreground visibility gate. Current locked Priority behavior is documented in `ARCHITECTURE.md`: the locked request removes local decline/end controls, but Android's foreground microphone rule still means microphone capture begins only once the Watch activity is visible.
+The original v1 Priority path kept its foreground visibility gate. This closure note predates the later AndroidX Core-Telecom background path, so that old foreground-only behavior must not be treated as current. See [ARCHITECTURE.md](ARCHITECTURE.md) for the current mechanism and [VALIDATION.md](VALIDATION.md) for current evidence.
 
 ### Abnormal live-call DISCONNECTED outcome
 

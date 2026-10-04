@@ -1,6 +1,6 @@
 # Architecture
 
-> Canonical current-state architecture for `main`. PR-specific closure notes under `docs/` are historical unless this document links to them as normative behavior.
+> Canonical current-state architecture for `main`. PR-specific closure notes under `docs/` are historical unless this document links to them as normative behavior. Mutable CI/physical-device evidence is tracked in [VALIDATION.md](VALIDATION.md).
 
 ## Product contract
 
@@ -37,7 +37,7 @@ The Store APIs are currently synchronous so the existing UI/state machine can re
 
 TEXT uses a stable UUID and is stored directly in Room. Outgoing text is initially `LOCAL`. If `DataClient.putDataItem()` accepts it while the peer is reachable, the UI may label the local send attempt `SENT`; if the peer is offline it remains `QUEUED` for later synchronization. Neither state claims remote receipt. HappyTalky does not label an outgoing message Delivered or Read without an explicit receiver acknowledgement. A reachable peer may send TEXT while device-info metadata is still refreshing; offline queueing requires previously confirmed `text_v1` support.
 
-Watch TEXT read-aloud is entirely local presentation behavior. Long-pressing a TEXT row toggles Android `TextToSpeech` for that message, uses the Watch's configured locale/voice when available, and exposes the currently speaking row visually. `QUEUE_FLUSH` semantics ensure a newly selected message replaces the previous utterance. The controller stops and releases speech across Inbox exit/activity stop and yields immediately to TALK playback/recording or any non-idle CALL state. No TTS state or audio is synchronized to Phone.
+Watch TEXT read-aloud is local Android `TextToSpeech` presentation. No TTS audio or speaking state is synchronized to Phone. Gesture, haptic and communication-audio priority rules live in [UI_GUIDELINES.md](UI_GUIDELINES.md).
 
 ## Companion discovery
 
@@ -60,7 +60,7 @@ This lets presentation use labels such as `Watch · Pixel Watch 3` and lets late
 
 ## Nearby BLE finding
 
-Physical-device status: **Find Watch has passed basic end-to-end validation** on the target Phone + Watch pair. **Find Phone is software/CI validated but still requires a physical-device acceptance test.** RSSI proximity is functional guidance, not exhaustive RF characterization or an exact distance measurement.
+Current BLE-finding validation evidence is tracked in [VALIDATION.md](VALIDATION.md). RSSI proximity is functional guidance, not exhaustive RF characterization or an exact distance measurement.
 
 BLE finding is bidirectional:
 
@@ -93,7 +93,7 @@ Signaling uses transient `MessageClient` paths:
 
 ### Priority CALL
 
-Physical-device status: **basic end-to-end validation passed** on the target Phone + Watch pair for locked Priority calling, including the background auto-connect path.
+Current locked-Priority validation evidence is tracked in [VALIDATION.md](VALIDATION.md).
 
 Locked Priority CALL is a separate immediate Phone-to-Watch request. It is not an escalation of an ordinary ringing CALL.
 

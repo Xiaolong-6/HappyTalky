@@ -1,6 +1,6 @@
 # Historical: Phone conversation polish and debug release lifecycle
 
-> Historical implementation/closure note. It is retained for provenance, but its baseline commit and PR-specific wording are not current requirements. Use [ARCHITECTURE.md](ARCHITECTURE.md), [DEPLOY.md](DEPLOY.md), [UI_GUIDELINES.md](UI_GUIDELINES.md), and the root README for the current contract.
+> Historical implementation/closure note. It is retained for provenance, but its baseline commit and PR-specific wording are not current requirements. Use [ARCHITECTURE.md](ARCHITECTURE.md), [DEPLOY.md](DEPLOY.md), [VALIDATION.md](VALIDATION.md), [UI_GUIDELINES.md](UI_GUIDELINES.md), and the root README for the current contract.
 
 Based on main `677a919` (includes PR #13's CALL/text/history fixes).
 
@@ -21,7 +21,7 @@ Phone header exposes **Priority call** as a direct parent action. New builds req
 
 Locked Priority has no Watch opt-out control. The Watch cannot decline the request or normally terminate the active call from the app or notification surfaces. The Phone can cancel while connection is pending and can end the connected call. Disconnect/system failure paths remain available.
 
-Because Android 14+ microphone permission is while-in-use, a background Watch Data Layer listener cannot start microphone capture by itself. The locked incoming state and high-priority notification are created immediately; automatic connection occurs immediately when HappyTalky is already foregrounded, or as soon as the Watch activity becomes foreground.
+At the time of this closure note, Android 14+ while-in-use microphone restrictions meant the implementation waited for the Watch activity to become foreground before beginning microphone capture. That pre-Core-Telecom behavior was later superseded by the current AndroidX Core-Telecom path. See [ARCHITECTURE.md](ARCHITECTURE.md) for current behavior and [VALIDATION.md](VALIDATION.md) for current evidence.
 
 ## Release policy
 
