@@ -603,21 +603,32 @@ class LiveCallService : Service() {
                         )
                     )
 
-        val microphone =
-            ServiceInfo
-                .FOREGROUND_SERVICE_TYPE_MICROPHONE
+        val isWatch =
+            packageManager.hasSystemFeature(
+                PackageManager.FEATURE_WATCH
+            )
+        val policy =
+            LiveCallForegroundPolicy.forCall(
+                isWatch = isWatch,
+                telecomManaged =
+                    telecomPriorityOnWatch
+            )
 
-        return if (telecomPriorityOnWatch) {
-            // Core-Telecom owns the call lifecycle, but HappyTalky still owns
-            // the AudioRecord capture. Keep MICROPHONE in the runtime FGS
-            // type set so Wear OS does not silence capture when the Activity
-            // leaves the foreground.
-            ServiceInfo
-                .FOREGROUND_SERVICE_TYPE_PHONE_CALL or
-                microphone
-        } else {
-            microphone
+        var types = 0
+        if (policy.microphone) {
+            types =
+                types or
+                    ServiceInfo
+                        .FOREGROUND_SERVICE_TYPE_MICROPHONE
         }
+        if (policy.phoneCall) {
+            types =
+                types or
+                    ServiceInfo
+                        .FOREGROUND_SERVICE_TYPE_PHONE_CALL
+        }
+
+        return types
     }
 
     companion object {
