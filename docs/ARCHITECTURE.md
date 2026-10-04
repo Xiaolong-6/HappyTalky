@@ -56,6 +56,8 @@ Each endpoint also publishes persistent metadata at:
 
 The payload contains the endpoint role, manufacturer/model, app version, protocol version, supported feature capabilities, and a publication timestamp. A stable app-scoped UUID identifies the endpoint across ordinary Data Layer reconnects. Peer metadata is accepted only when it is at least as fresh as the cached snapshot, so legacy persistent DataItems from an older install cannot overwrite current capabilities. `Node.displayName` is retained only as a human-readable fallback while the persistent device-info item has not arrived.
 
+Publishing alone is not treated as a sufficient refresh mechanism after an app upgrade. When a reachable peer is detected, HappyTalky sends `/happytalky/device-info/request`; the peer republishes its current device-info item with a fresh timestamp. The Activity also requests peer metadata whenever reachability is refreshed. This prevents an otherwise healthy Phone/Watch link from remaining gated by stale cached capabilities when the devices stayed connected through an upgrade.
+
 This lets presentation use labels such as `Watch · Pixel Watch 3` and lets later protocol features be gated by advertised capabilities instead of assuming both endpoints were upgraded simultaneously.
 
 ## Nearby BLE finding
