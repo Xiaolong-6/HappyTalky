@@ -132,7 +132,7 @@ For incoming normal CALL, Android may also control whether full-screen call noti
 
 ### Locked Priority CALL
 
-1. Install the same current build on Phone and Watch and open both once so `priority_locked_call_v1` metadata is published.
+1. Install the same current build on Phone and Watch. Open Phone while Watch remains reachable and verify peer metadata refreshes automatically; opening the Watch app must not be required merely to refresh `priority_locked_call_v1`.
 2. From an idle connected Phone, open **Priority call** and start it directly. Verify no normal CALL or five-second wait occurs first.
 3. With HappyTalky already visible on Watch, verify the Watch enters the locked Priority screen and auto-connects without a YES/NO choice.
 4. Verify Watch has no Decline/END control in the activity, incoming notification, or active-call notification.
