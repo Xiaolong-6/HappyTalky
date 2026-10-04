@@ -9,6 +9,7 @@ import android.app.Person
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioAttributes
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Build
@@ -27,7 +28,10 @@ object AlertController {
     // leave a Watch with no glanceable incoming-call cue once unsupported
     // full-screen intents were removed.
     private const val CALL_CHANNEL = "happytalky_calls_v4"
-    private const val MESSAGE_CHANNEL = "happytalky_messages_v1"
+    // v2 intentionally recreates the message channel. Android keeps channel
+    // alert behavior across app updates, so installs that already have v1
+    // configured quietly would otherwise stay quiet after this fix.
+    private const val MESSAGE_CHANNEL = "happytalky_messages_v2"
     private const val CALL_NOTIFICATION_ID = 1001
     private const val MESSAGE_NOTIFICATION_ID = 1002
 
@@ -517,13 +521,30 @@ object AlertController {
             )
             channel.description =
                 "New HappyTalky TALK and text messages"
+            val notificationSound =
+                RingtoneManager.getDefaultUri(
+                    RingtoneManager.TYPE_NOTIFICATION
+                )
+            val audioAttributes =
+                AudioAttributes.Builder()
+                    .setUsage(
+                        AudioAttributes.USAGE_NOTIFICATION
+                    )
+                    .setContentType(
+                        AudioAttributes.CONTENT_TYPE_SONIFICATION
+                    )
+                    .build()
+            channel.setSound(
+                notificationSound,
+                audioAttributes
+            )
             channel.enableVibration(true)
             channel.vibrationPattern =
                 longArrayOf(
                     0L,
-                    180L,
-                    100L,
-                    260L
+                    250L,
+                    120L,
+                    350L
                 )
             manager.createNotificationChannel(channel)
         }
