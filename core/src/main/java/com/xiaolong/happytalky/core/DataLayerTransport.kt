@@ -161,6 +161,18 @@ class DataLayerTransport(context: Context) {
         }
     }
 
+    fun requestPeerDeviceInfo(
+        callback: (Boolean) -> Unit = {}
+    ) {
+        sendSignal(
+            Protocol.DEVICE_INFO_REQUEST,
+            LocalDeviceIdentity.id(
+                appContext
+            ),
+            callback
+        )
+    }
+
     fun publishDeviceInfo(
         callback: (Boolean) -> Unit = {}
     ) {
