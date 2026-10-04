@@ -439,6 +439,31 @@ fun WatchMixedInboxScreenshot() {
 
 @PreviewTest
 @Preview(
+    name = "Watch text read aloud",
+    device = WATCH_DEVICE,
+    showBackground = true,
+    backgroundColor = WATCH_BACKGROUND,
+)
+@Composable
+fun WatchTextReadAloudScreenshot() {
+    MaterialTheme {
+        WearInbox(
+            messages = watchMessages,
+            callHistory = watchCallHistory,
+            timeline = watchConversation,
+            unreadCount = 2,
+            peerName = "Phone · Pixel 10 Pro",
+            textEnabled = true,
+            onBack = {},
+            onPlay = {},
+            speakingTextId =
+                "watch-text-out",
+        )
+    }
+}
+
+@PreviewTest
+@Preview(
     name = "Watch TALK deleted confirmation",
     device = WATCH_DEVICE,
     showBackground = true,
