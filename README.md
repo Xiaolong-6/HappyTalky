@@ -28,7 +28,7 @@ These images are generated from the checked-in Compose screenshot suite on curre
 
 | Phone conversation | Find Watch |
 | :---: | :---: |
-| ![HappyTalky phone conversation UI](./docs/images/readme/phone-conversation.webp) | ![HappyTalky Find Watch UI](./docs/images/readme/phone-find-watch.webp) |
+| ![HappyTalky phone conversation UI](./docs/images/readme/phone-conversation.jpg) | ![HappyTalky Find Watch UI](./docs/images/readme/phone-find-watch.jpg) |
 
 | Watch home | TEXT read-aloud |
 | :---: | :---: |
