@@ -238,7 +238,7 @@ CI-equivalent local checks:
 
 ~~~text
 node --test .github/scripts/cleanup-debug-releases.test.cjs
-gradle :core:testDebugUnitTest :mobile:assembleDebug :wear:assembleDebug
+gradle :core:testDebugUnitTest :wear:testDebugUnitTest :mobile:assembleDebug :wear:assembleDebug
 gradle :mobile:updateDebugScreenshotTest :wear:updateDebugScreenshotTest
 ~~~
 
