@@ -18,7 +18,7 @@ Minimum behavior validation:
 
 ~~~text
 node --test .github/scripts/cleanup-debug-releases.test.cjs
-gradle :core:testDebugUnitTest :mobile:assembleDebug :wear:assembleDebug
+gradle :core:testDebugUnitTest :wear:testDebugUnitTest :mobile:assembleDebug :wear:assembleDebug
 ~~~
 
 For UI changes, also render the checked-in screenshot suite before considering the work complete:
