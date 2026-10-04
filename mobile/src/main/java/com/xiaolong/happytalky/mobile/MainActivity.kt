@@ -1928,7 +1928,7 @@ private fun headerStatusText(
                 "Remote Wi-Fi"
 
             PeerRoute.REMOTE_CELLULAR ->
-                "Cellular"
+                "Remote · Cellular"
 
             PeerRoute.REMOTE_INTERNET ->
                 "Remote"
