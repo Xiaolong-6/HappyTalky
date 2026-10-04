@@ -728,14 +728,14 @@ abstract class HappyTalkyActivity : ComponentActivity() {
             StateStore.setStatus(
                 this,
                 when (route) {
-                    PeerRoute.REMOTE_CELLULAR ->
-                        "Cellular route · TALK recommended"
-                    PeerRoute.REMOTE_INTERNET ->
-                        "Remote route uncertain · TALK recommended"
                     PeerRoute.RECONNECTING ->
                         "Reconnecting · try CALL when ready"
-                    else ->
+                    PeerRoute.UNKNOWN ->
+                        "Checking connection · try CALL when ready"
+                    PeerRoute.OFFLINE ->
                         "${peerName()} is offline · TALK recommended"
+                    else ->
+                        "${peerName()} is unavailable · TALK recommended"
                 }
             )
             refreshPeerRoute()
