@@ -688,6 +688,8 @@ class HappyTalkyListenerService : WearableListenerService() {
                 Unit
         }
 
+        AudioPlayer.stop()
+
         StateStore.setCallInitiator(
             this,
             false
@@ -859,6 +861,10 @@ class HappyTalkyListenerService : WearableListenerService() {
         )
         AlertController.stop(this)
         LiveCallAudio.stop(this)
+        CallHaptics.ended(
+            this,
+            callId
+        )
         LiveCallService.stop(this)
         EventBus.notifyStateChanged(this)
     }
@@ -955,6 +961,10 @@ class HappyTalkyListenerService : WearableListenerService() {
         )
         AlertController.stop(this)
         LiveCallAudio.stop(this)
+        CallHaptics.ended(
+            this,
+            callId
+        )
         LiveCallService.stop(this)
         EventBus.notifyStateChanged(this)
     }
