@@ -2127,10 +2127,10 @@ private fun wearRouteLabel(state: HappyTalkyUiState): String =
             "Wi-Fi · CALL"
 
         state.peerRoute == PeerRoute.REMOTE_CELLULAR ->
-            "Cell · TALK"
+            "Cell · CALL"
 
         state.peerRoute == PeerRoute.REMOTE_INTERNET ->
-            "Remote · TALK"
+            "Remote · CALL"
 
         else ->
             "Checking"
