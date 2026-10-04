@@ -1,6 +1,6 @@
 # HappyTalky
 
-Current `main` app build: **0.3.2** (`versionCode 5`) for both Phone and Watch.
+Current `main` app build: **0.4.1** (`versionCode 7`) for both Phone and Watch.
 
 HappyTalky is a deliberately simple Android + Wear OS companion app for a paired phone and Pixel Watch.
 
@@ -29,6 +29,8 @@ TALK is asynchronous and privacy-preserving:
 TEXT uses persistent Wear OS Data Layer DataItems, so a message can be written while the peer is temporarily unavailable and synchronize later. A locally accepted send is shown as **Sent** when the peer is reachable or **Queued** when it is offline; neither label claims remote receipt. HappyTalky does not claim Delivered or Read until those states are explicitly acknowledged.
 
 Phone uses a normal Material 3 composer. Wear shows a compact Message composer in Inbox and delegates real entry to the Wear OS system RemoteInput experience, including dictation, emoji, quick replies and the configured IME.
+
+On Watch, long-pressing a TEXT row reads that message aloud with the local Android text-to-speech engine. Long-pressing the same row again stops playback; long-pressing another TEXT row replaces the current utterance. Read-aloud is Watch-local behavior and adds no Data Layer protocol message. It stops when Inbox closes, when TALK/voice playback starts, or when CALL leaves the idle state.
 
 ## Connectivity
 

@@ -209,7 +209,11 @@ The route label describes the local endpoint's active transport only. It must no
 3. Make the peer unavailable and send TEXT only after the cached peer advertises `text_v1`; verify the local row shows **Queued**, not Delivered/Read.
 4. Restore connectivity and verify the queued DataItem synchronizes without creating a duplicate row or duplicate notification.
 5. Open Watch Inbox and verify incoming TEXT is marked read locally; confirm TALK still requires playback completion before its unread state clears.
-6. Delete TEXT and CALL rows locally on Watch and verify this behaves as local history management, not remote recall. Delete a TALK row and verify its local audio file is removed as well.
+6. Long-press a TEXT row and verify the Watch gives long-press haptic feedback, shows the read-aloud indicator, and speaks the message through the local TTS engine.
+7. Long-press the same TEXT row again and verify speech stops. Start it again, then long-press a different TEXT row and verify the second message replaces the first.
+8. While a message is speaking, leave Inbox, start TALK/voice playback, or start/receive CALL; verify TTS stops immediately and does not overlap communication audio.
+9. Swipe a TEXT row horizontally while it is not being long-pressed and verify the existing Delete reveal still works without triggering TTS.
+10. Delete TEXT and CALL rows locally on Watch and verify this behaves as local history management, not remote recall. Delete a TALK row and verify its local audio file is removed as well.
 
 ## Build locally
 
