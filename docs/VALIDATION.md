@@ -19,7 +19,7 @@ Use [DEPLOY.md](DEPLOY.md) for the acceptance procedure. Update this file only w
 | --- | --- | --- | --- |
 | Phone + Watch debug build | **Passed** | N/A | Core/Wear unit tests, both APK builds and Compose screenshot rendering run in Android CI. |
 | Normal CALL / TALK / TEXT core flows | **Passed** for checked-in automated coverage | Manual acceptance remains release-dependent | Use the full device checklist in DEPLOY; do not infer audio/radio quality from CI. |
-| Locked Priority CALL, including background Core-Telecom path | **Passed** | **Passed — basic end-to-end scope** | Verified on the target Phone + Watch pair. Watch has no normal Decline/End product control; route/system failures remain legitimate exits. |
+| Locked Priority CALL, including background Core-Telecom path | **Passed** for policy/build/screenshot coverage | **Retest pending** | Interaction locking now suppresses Watch Inbox/TEXT/TTS/TALK/Find Phone during non-idle locked Priority, and live-connect/end haptics were added. Previous basic end-to-end evidence predates these changes; route/system failures remain legitimate exits. |
 | Find Watch (Phone -> Watch BLE RSSI) | **Passed** | **Passed — basic end-to-end scope** | Qualitative proximity/trend only; no exact distance or direction claim. |
 | Find Phone (Watch -> Phone BLE RSSI) | **Passed** | **CI only** | Physical Watch-to-Phone BLE acceptance is still required. |
 | Remote CALL: Phone on carrier data, Watch remote on Wi-Fi | **Passed** for route policy/unit/build coverage | **Retest pending** | The previous policy incorrectly blocked local cellular routes. After the fix, a reachable remote Data Layer peer is CALL-capable; the real remote topology still needs a post-fix device retest. |
