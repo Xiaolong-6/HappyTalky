@@ -195,15 +195,27 @@ class MainActivity : HappyTalkyActivity() {
                     },
                     onComposeText = {
                         textToSpeechController.stop()
-                        launchTextInput()
+                        if (
+                            uiState.callState ==
+                                CallVisualState.READY &&
+                            !uiState.priorityLocked
+                        ) {
+                            launchTextInput()
+                        }
                     },
                     onFindPhone = {
-                        startActivity(
-                            Intent(
-                                this,
-                                FindPhoneActivity::class.java
+                        if (
+                            uiState.callState ==
+                                CallVisualState.READY &&
+                            !uiState.priorityLocked
+                        ) {
+                            startActivity(
+                                Intent(
+                                    this,
+                                    FindPhoneActivity::class.java
+                                )
                             )
-                        )
+                        }
                     },
                     openInbox = openInboxRequested,
                     onInboxOpened = {
@@ -213,12 +225,20 @@ class MainActivity : HappyTalkyActivity() {
                     speakingTextId =
                         speakingTextId,
                     onToggleTextSpeech = { item ->
-                        textToSpeechController.toggle(
-                            itemId = item.id,
-                            text =
-                                item.text
-                                    .orEmpty(),
-                        )
+                        if (
+                            uiState.callState ==
+                                CallVisualState.READY &&
+                            !uiState.priorityLocked
+                        ) {
+                            textToSpeechController.toggle(
+                                itemId = item.id,
+                                text =
+                                    item.text
+                                        .orEmpty(),
+                            )
+                        } else {
+                            textToSpeechController.stop()
+                        }
                     },
                     onInboxClosed = {
                         textToSpeechController.stop()
@@ -388,6 +408,18 @@ fun WearHome(
         }
     }
 
+    val lockedPriorityCall =
+        state.priorityLocked &&
+            state.callState !=
+                CallVisualState.READY
+
+    if (lockedPriorityCall) {
+        WearLockedPriorityCallScreen(
+            state = state
+        )
+        return
+    }
+
     if (
         state.callState ==
             CallVisualState.INCOMING
@@ -397,8 +429,6 @@ fun WearHome(
             priority =
                 state.callMode ==
                     CallMode.PRIORITY,
-            locked =
-                state.priorityLocked,
             onAnswer = onCall,
             onDecline = onDecline,
         )
@@ -557,17 +587,9 @@ private fun WearHomePage(
 private fun WearIncomingCallScreen(
     peerName: String,
     priority: Boolean = false,
-    locked: Boolean = false,
     onAnswer: () -> Unit,
     onDecline: () -> Unit,
 ) {
-    if (locked) {
-        WearLockedPriorityIncomingScreen(
-            peerName = peerName
-        )
-        return
-    }
-
     AppScaffold(
         containerColor = Color.Black,
         contentColor = Color.White,
@@ -664,9 +686,28 @@ private fun WearIncomingCallScreen(
 }
 
 @Composable
-private fun WearLockedPriorityIncomingScreen(
-    peerName: String,
+private fun WearLockedPriorityCallScreen(
+    state: HappyTalkyUiState,
 ) {
+    val phase =
+        when (state.callState) {
+            CallVisualState.INCOMING ->
+                "AUTO CONNECT"
+
+            CallVisualState.OUTGOING,
+            CallVisualState.CONNECTING ->
+                "CONNECTING"
+
+            CallVisualState.LIVE ->
+                "CONNECTED"
+
+            CallVisualState.RECONNECTING ->
+                "RECONNECTING"
+
+            CallVisualState.READY ->
+                "PRIORITY"
+        }
+
     AppScaffold(
         containerColor = Color.Black,
         contentColor = Color.White,
@@ -677,7 +718,7 @@ private fun WearLockedPriorityIncomingScreen(
                 .padding(
                     start = 18.dp,
                     end = 18.dp,
-                    top = 26.dp,
+                    top = 24.dp,
                     bottom = 18.dp,
                 ),
             horizontalAlignment =
@@ -702,7 +743,7 @@ private fun WearLockedPriorityIncomingScreen(
             )
 
             Text(
-                text = peerName,
+                text = state.peerName,
                 style =
                     MaterialTheme
                         .typography
@@ -718,22 +759,34 @@ private fun WearLockedPriorityIncomingScreen(
 
             Icon(
                 imageVector =
-                    Icons.Rounded.Call,
-                contentDescription = null,
+                    Icons.Rounded.Lock,
+                contentDescription =
+                    "Locked priority call",
                 modifier =
                     Modifier.size(30.dp),
                 tint =
-                    Color(0xFF76DCA5),
+                    Color(0xFFFFD35A),
             )
 
             Text(
-                text = "AUTO CONNECT",
+                text = phase,
                 style =
                     MaterialTheme
                         .typography
                         .labelMedium,
                 color =
-                    Color(0xFFFFD35A),
+                    when (
+                        state.callState
+                    ) {
+                        CallVisualState.LIVE ->
+                            Color(0xFF76DCA5)
+
+                        CallVisualState.RECONNECTING ->
+                            Color(0xFFFFD35A)
+
+                        else ->
+                            Color(0xFF8CC0FF)
+                    },
                 fontWeight =
                     FontWeight.Bold,
                 maxLines = 1,
