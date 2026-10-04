@@ -296,6 +296,10 @@ class LiveCallService : Service() {
     ) {
         cancelRetry()
         LiveCallAudio.stop(this)
+        CallHaptics.ended(
+            this,
+            callId
+        )
         PriorityTelecomController
             .disconnectForFailure(
                 this,
