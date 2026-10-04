@@ -57,6 +57,8 @@ Current Watch priorities are:
 3. hold/release TALK;
 4. unified Inbox for TEXT/TALK/CALL history and Message entry.
 
+Watch TEXT rows reserve long-press for local read-aloud. Long-press must give haptic feedback and a compact visible speaking state without adding a permanent button. Horizontal swipe remains Delete, so gesture handling must preserve drag cancellation/touch slop rather than letting a slight swipe trigger speech. Communication audio has priority: Inbox exit, TALK playback/recording, and any non-idle CALL state stop TTS.
+
 Crown/rotary scrolling and touch targets must be verified on the 192 dp round baseline, then on hardware when the change affects physical interaction.
 
 ## Priority CALL interaction invariant
