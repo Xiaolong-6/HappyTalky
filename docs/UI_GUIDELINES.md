@@ -70,7 +70,7 @@ Locked Priority CALL is a deliberate parent-to-Watch path and must remain visibl
 - Watch does not expose a normal END action for an active locked Priority call.
 - Phone can cancel while pending and end once connected.
 - Route/system failure can still terminate it.
-- Do not claim that a background Watch can begin microphone capture automatically when Android while-in-use microphone rules forbid that. The locked state/notification can appear immediately; audio starts once the Watch activity is legally foregrounded.
+- A background Data Layer listener must not directly start microphone capture or a microphone foreground service. The current locked-Priority background path is owned by AndroidX Core-Telecom; when Telecom accepts/answers the call, HappyTalky may start its PCM transport under that platform call lifecycle. If Telecom is unavailable, the visible-Activity fallback remains the supported fallback. Current device evidence belongs in [VALIDATION.md](VALIDATION.md).
 
 Any UI change that weakens one of these rules is a behavior change and must be reviewed together with `docs/ARCHITECTURE.md` and the shared Priority policy/tests.
 
