@@ -13,6 +13,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -1164,23 +1165,25 @@ private fun TextBubble(
                             vertical = 9.dp,
                         ),
                 ) {
-                    Text(
-                        text = text,
-                        fontSize = if (emojiOnly) 32.sp else 16.sp,
-                        lineHeight = if (emojiOnly) 40.sp else 24.sp,
-                        style =
-                            MaterialTheme
-                                .typography
-                                .bodyLarge,
-                        color =
-                            if (outgoing && !emojiOnly) {
-                                Color.White
-                            } else {
+                    SelectionContainer {
+                        Text(
+                            text = text,
+                            fontSize = if (emojiOnly) 32.sp else 16.sp,
+                            lineHeight = if (emojiOnly) 40.sp else 24.sp,
+                            style =
                                 MaterialTheme
-                                    .colorScheme
-                                    .onSurface
-                            },
-                    )
+                                    .typography
+                                    .bodyLarge,
+                            color =
+                                if (outgoing && !emojiOnly) {
+                                    Color.White
+                                } else {
+                                    MaterialTheme
+                                        .colorScheme
+                                        .onSurface
+                                },
+                        )
+                    }
 
                     Spacer(
                         Modifier.height(3.dp)
