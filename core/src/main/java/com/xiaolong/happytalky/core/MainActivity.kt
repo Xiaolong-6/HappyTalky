@@ -721,8 +721,14 @@ abstract class HappyTalkyActivity : ComponentActivity() {
 
         handler.post {
             transport.refreshPeerConnection {
-                    _,
+                    state,
                     _ ->
+                if (
+                    state ==
+                        PeerConnectionState.CONNECTED
+                ) {
+                    transport.requestPeerDeviceInfo()
+                }
                 refreshUiState()
             }
         }
