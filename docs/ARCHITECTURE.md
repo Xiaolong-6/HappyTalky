@@ -175,16 +175,18 @@ This is intended for ordinary Bluetooth/Wi-Fi handovers and brief network interr
 
 ## Route model
 
-`PeerRoute` is deliberately conservative:
+`PeerRoute` separates peer reachability from the local device's currently observed transport:
 
 - `NEARBY_DIRECT`: Data Layer reports the peer as nearby/direct. This is the preferred CALL route.
 - `REMOTE_WIFI`: peer reachable remotely and the local device's active network is Wi-Fi. CALL is allowed.
-- `REMOTE_CELLULAR`: peer reachable remotely and the local device's active network is cellular. TALK is recommended; new CALL is disabled.
-- `REMOTE_INTERNET`: peer reachable but local route type is not known strongly enough. TALK is recommended.
-- `OFFLINE`: no reachable peer.
-- `RECONNECTING`: temporary active-call recovery state.
+- `REMOTE_CELLULAR`: peer reachable remotely and the local device's active network is cellular. CALL is allowed.
+- `REMOTE_INTERNET`: peer reachable remotely but the local route type cannot be classified more specifically. CALL is allowed.
+- `OFFLINE`: no reachable peer. New CALL is disabled.
+- `RECONNECTING`: temporary active-call recovery state. New CALL waits for reachability to return.
 
-The app does not infer the remote peer's exact last-mile transport from local network state.
+CALL readiness is gated by a reachable HappyTalky capability node, not by whether the local phone happens to be on Wi-Fi or cellular data. In particular, Phone-on-cellular + remote Watch-on-Wi-Fi is a valid remote CALL topology when the Watch remains reachable through the Wear OS Data Layer.
+
+The app does not infer the remote peer's exact last-mile transport from local network state. `REMOTE_CELLULAR` describes the local endpoint's active network only; it does not mean the remote peer is using cellular.
 
 ## Incoming CALL presentation
 
