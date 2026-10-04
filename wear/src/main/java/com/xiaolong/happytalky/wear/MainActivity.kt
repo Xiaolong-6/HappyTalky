@@ -41,6 +41,7 @@ import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.material.icons.rounded.NetworkCell
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.Wifi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,11 +57,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onLongClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -102,6 +106,9 @@ import kotlinx.coroutines.launch
 
 class MainActivity : HappyTalkyActivity() {
     private var openInboxRequested by mutableStateOf(false)
+    private var speakingTextId by mutableStateOf<String?>(null)
+    private lateinit var textToSpeechController:
+        WearTextToSpeechController
 
     private val textInputLauncher =
         registerForActivityResult(
@@ -140,21 +147,56 @@ class MainActivity : HappyTalkyActivity() {
                 false
             ) == true
 
+        textToSpeechController =
+            WearTextToSpeechController(
+                this
+            ) { itemId ->
+                speakingTextId = itemId
+            }
 
         setContent {
+            LaunchedEffect(
+                uiState.callState
+            ) {
+                if (
+                    uiState.callState !=
+                        CallVisualState.READY
+                ) {
+                    textToSpeechController.stop()
+                }
+            }
+
             MaterialTheme {
                 WearHome(
                     state = uiState,
-                    onCall = ::handleCallAction,
+                    onCall = {
+                        textToSpeechController.stop()
+                        handleCallAction()
+                    },
                     onDecline = ::declineIncomingCall,
-                    onTalkStart = ::beginTalk,
+                    onTalkStart = {
+                        textToSpeechController.stop()
+                        beginTalk()
+                    },
                     onTalkFinish = ::finishTalk,
                     onTalkCancel = ::cancelTalk,
-                    onPlay = ::playMessage,
-                    onDelete =
-                        ::deleteConversationItems,
-                    onComposeText =
-                        ::launchTextInput,
+                    onPlay = { message ->
+                        textToSpeechController.stop()
+                        playMessage(message)
+                    },
+                    onDelete = { ids ->
+                        if (
+                            speakingTextId != null &&
+                            speakingTextId in ids
+                        ) {
+                            textToSpeechController.stop()
+                        }
+                        deleteConversationItems(ids)
+                    },
+                    onComposeText = {
+                        textToSpeechController.stop()
+                        launchTextInput()
+                    },
                     onFindPhone = {
                         startActivity(
                             Intent(
@@ -168,6 +210,19 @@ class MainActivity : HappyTalkyActivity() {
                         openInboxRequested = false
                         markTextMessagesRead()
                     },
+                    speakingTextId =
+                        speakingTextId,
+                    onToggleTextSpeech = { item ->
+                        textToSpeechController.toggle(
+                            itemId = item.id,
+                            text =
+                                item.text
+                                    .orEmpty(),
+                        )
+                    },
+                    onInboxClosed = {
+                        textToSpeechController.stop()
+                    },
                 )
             }
         }
@@ -180,6 +235,27 @@ class MainActivity : HappyTalkyActivity() {
                 Protocol.EXTRA_OPEN_INBOX,
                 false
             )
+    }
+
+    override fun onStop() {
+        if (
+            ::textToSpeechController
+                .isInitialized
+        ) {
+            textToSpeechController.stop()
+        }
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        if (
+            ::textToSpeechController
+                .isInitialized
+        ) {
+            textToSpeechController
+                .shutdown()
+        }
+        super.onDestroy()
     }
 
     private fun launchTextInput() {
@@ -285,6 +361,10 @@ fun WearHome(
     onFindPhone: () -> Unit = {},
     openInbox: Boolean = false,
     onInboxOpened: () -> Unit = {},
+    speakingTextId: String? = null,
+    onToggleTextSpeech:
+        (ConversationItem) -> Unit = {},
+    onInboxClosed: () -> Unit = {},
 ) {
     var showInbox by remember {
         mutableStateOf(false)
@@ -339,10 +419,15 @@ fun WearHome(
             onComposeText =
                 onComposeText,
             onBack = {
+                onInboxClosed()
                 showInbox = false
             },
             onPlay = onPlay,
             onDelete = onDelete,
+            speakingTextId =
+                speakingTextId,
+            onToggleTextSpeech =
+                onToggleTextSpeech,
         )
         return
     }
@@ -1138,6 +1223,9 @@ fun WearInbox(
     onBack: () -> Unit,
     onPlay: (VoiceMessage) -> Unit,
     onDelete: (Set<String>) -> Unit = {},
+    speakingTextId: String? = null,
+    onToggleTextSpeech:
+        (ConversationItem) -> Unit = {},
 ) {
     val voiceById =
         remember(messages) {
@@ -1453,6 +1541,14 @@ fun WearInbox(
                                         item = item,
                                         peerName =
                                             peerName,
+                                        speaking =
+                                            speakingTextId ==
+                                                item.id,
+                                        onLongPress = {
+                                            onToggleTextSpeech(
+                                                item
+                                            )
+                                        },
                                     )
                                 }
                             }
@@ -1554,6 +1650,8 @@ internal fun WearDeleteConfirmation(
 private fun WearTextMessage(
     item: ConversationItem,
     peerName: String,
+    speaking: Boolean = false,
+    onLongPress: () -> Unit = {},
 ) {
     val outgoing =
         item.direction ==
@@ -1561,19 +1659,56 @@ private fun WearTextMessage(
     val text =
         item.text
             ?: return
+    val haptics =
+        LocalHapticFeedback.current
+
+    fun toggleSpeech() {
+        haptics.performHapticFeedback(
+            HapticFeedbackType.LongPress
+        )
+        onLongPress()
+    }
 
     Box(
         modifier = Modifier
             .width(140.dp)
             .height(54.dp)
             .background(
-                if (outgoing) {
-                    Color(0xFF173B63)
-                } else {
-                    Color(0xFF121D2E)
+                when {
+                    speaking ->
+                        Color(0xFF244C73)
+
+                    outgoing ->
+                        Color(0xFF173B63)
+
+                    else ->
+                        Color(0xFF121D2E)
                 },
                 RoundedCornerShape(18.dp)
             )
+            .semantics {
+                onLongClick(
+                    label =
+                        if (speaking) {
+                            "Stop reading message"
+                        } else {
+                            "Read message aloud"
+                        }
+                ) {
+                    toggleSpeech()
+                    true
+                }
+            }
+            .pointerInput(
+                item.id,
+                speaking,
+            ) {
+                detectTapGestures(
+                    onLongPress = {
+                        toggleSpeech()
+                    }
+                )
+            }
             .padding(
                 horizontal = 9.dp,
                 vertical = 6.dp,
@@ -1618,22 +1753,57 @@ private fun WearTextMessage(
                 )
 
                 Spacer(
-                    Modifier.width(5.dp)
+                    Modifier.width(4.dp)
                 )
 
-                Text(
-                    text =
-                        wearMessageTime(
-                            item.createdAt
-                        ),
-                    style =
-                        MaterialTheme
-                            .typography
-                            .labelSmall,
-                    color =
-                        Color(0xFF7F8DA2),
-                    maxLines = 1,
-                )
+                Row(
+                    verticalAlignment =
+                        Alignment.CenterVertically,
+                ) {
+                    if (speaking) {
+                        Icon(
+                            imageVector =
+                                Icons.Rounded
+                                    .VolumeUp,
+                            contentDescription =
+                                "Reading aloud",
+                            tint =
+                                Color(
+                                    0xFFB8D8FF
+                                ),
+                            modifier =
+                                Modifier.size(
+                                    12.dp
+                                ),
+                        )
+
+                        Spacer(
+                            Modifier.width(2.dp)
+                        )
+                    }
+
+                    Text(
+                        text =
+                            wearMessageTime(
+                                item.createdAt
+                            ),
+                        style =
+                            MaterialTheme
+                                .typography
+                                .labelSmall,
+                        color =
+                            if (speaking) {
+                                Color(
+                                    0xFFB8D8FF
+                                )
+                            } else {
+                                Color(
+                                    0xFF7F8DA2
+                                )
+                            },
+                        maxLines = 1,
+                    )
+                }
             }
 
             Text(
