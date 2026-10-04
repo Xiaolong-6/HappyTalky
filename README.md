@@ -36,8 +36,9 @@ HappyTalky exposes the route it can actually infer from Wear OS Data Layer and t
 
 - **Nearby · direct** — the paired peer is a nearby Data Layer node and can be reached directly. This is the preferred CALL route.
 - **Remote · Wi-Fi** — the peer is reachable through the remote Data Layer path while this device has Wi-Fi. CALL is allowed, with TALK as the more tolerant fallback.
-- **Remote · Cellular / Remote** — the peer is reachable remotely but the route is not suitable enough for this implementation's live ChannelClient audio. CALL is disabled and TALK is recommended.
-- **Offline** — CALL is disabled; TALK can still be recorded and queued for later synchronization.
+- **Remote · Cellular** — the peer is reachable remotely while this device is using cellular data. CALL is allowed; this label describes the local device's network and does not imply that the remote peer is also on cellular.
+- **Remote** — the peer is reachable remotely but the local transport cannot be classified more specifically. CALL is allowed because peer reachability has already been established by the Data Layer.
+- **Offline** — no reachable peer is currently available, so CALL is disabled; TALK can still be recorded and queued for later synchronization.
 - **Reconnecting** — an active CALL keeps a short grace period while HappyTalky tries to restore the live channel after a route change.
 
 The UI deliberately does not claim to know the remote peer's exact LTE/Wi-Fi leg when Wear OS does not expose it.
