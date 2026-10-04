@@ -22,6 +22,12 @@ class ProtocolTest {
             Protocol.CAPABILITY_PRIORITY_LOCKED_CALL_V1
                 .isNotBlank()
         )
+        assertTrue(
+            Protocol.DEVICE_INFO_REQUEST
+                .startsWith(
+                    Protocol.BASE
+                )
+        )
         assertTrue(Protocol.CAPABILITY_PHONE.isNotBlank())
         assertTrue(Protocol.CAPABILITY_WATCH.isNotBlank())
         assertTrue(Protocol.VOICE_PREFIX.startsWith(Protocol.BASE))
