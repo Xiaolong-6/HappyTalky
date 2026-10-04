@@ -2165,7 +2165,7 @@ internal fun PriorityCallOptions(
                 "Connect the watch before starting a priority call."
 
             !supported ->
-                "This watch does not support locked priority calls yet. Update both apps and reconnect."
+                "Locked Priority support has not been received from this watch yet. HappyTalky now refreshes watch capabilities automatically; if this persists, install the same current build on both devices and reopen the watch app."
 
             state.callState !=
                 CallVisualState.READY ||
@@ -2190,7 +2190,7 @@ internal fun PriorityCallOptions(
             ) {
                 Text(explanation)
                 Text(
-                    "If the watch app is already visible, it auto-connects immediately. Android does not allow background microphone capture until the watch app becomes foreground.",
+                    "On supported Wear OS devices, Android's call framework lets locked Priority auto-connect in the background. If that system path is unavailable, opening the watch app provides the foreground fallback.",
                     style =
                         MaterialTheme
                             .typography
