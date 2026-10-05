@@ -38,7 +38,7 @@ gradle :wear:testDebugUnitTest :wear:assembleDebug
 Install the debug Watch APK and run:
 
 ```text
-adb shell am start -n com.xiaolong.happytalky/com.xiaolong.happytalky.wear.PublicWifiDebugActivity
+adb shell am start -n com.xldev.happytalky/com.xldev.happytalky.wear.PublicWifiDebugActivity
 ```
 
 Then:

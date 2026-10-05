@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.xiaolong.happytalky.core"
+    namespace = "com.xldev.happytalky.core"
     compileSdk = 37
 
     defaultConfig {

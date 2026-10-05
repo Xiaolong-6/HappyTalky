@@ -30,7 +30,7 @@ GitHub Actions artifacts remain available as a secondary path.
 
 ## Rename cutover
 
-The package rename happened in **0.3.0**. Current `main` remains on `com.xiaolong.happytalky` and intentionally does not upgrade the old `com.xiaolong.happytalkie` install. Remove the old phone/watch app after installing a current build so two launcher entries and two Data Layer endpoints cannot be confused.
+The original package rename happened in **0.3.0**. The current application ID is `com.xldev.happytalky`; it does not upgrade installs using either previous ID (`com.xiaolong.happytalky` or `com.xiaolong.happytalkie`). Remove the old phone/watch app after installing a current build so two launcher entries and two Data Layer endpoints cannot be confused.
 
 ## Install on the Android phone
 
@@ -47,7 +47,7 @@ adb install -r HappyTalky-phone-debug.apk
 If Android reports a signing mismatch from an older experimental build:
 
 ~~~text
-adb uninstall com.xiaolong.happytalky
+adb uninstall com.xldev.happytalky
 adb install HappyTalky-phone-debug.apk
 ~~~
 
@@ -76,7 +76,7 @@ adb -s WATCH_IP:DEBUG_PORT install -r HappyTalky-watch-debug.apk
 If the existing watch build has a different signature:
 
 ~~~text
-adb -s WATCH_IP:DEBUG_PORT uninstall com.xiaolong.happytalky
+adb -s WATCH_IP:DEBUG_PORT uninstall com.xldev.happytalky
 adb -s WATCH_IP:DEBUG_PORT install HappyTalky-watch-debug.apk
 ~~~
 
@@ -132,17 +132,27 @@ For incoming normal CALL, Android may also control whether full-screen call noti
 
 ### Locked Priority CALL
 
-1. Install the same current build on Phone and Watch and open both once so `priority_locked_call_v1` metadata is published.
+1. Install the same current build on Phone and Watch. Open Phone while Watch remains reachable and verify peer metadata refreshes automatically; opening the Watch app must not be required merely to refresh `priority_locked_call_v1`.
 2. From an idle connected Phone, open **Priority call** and start it directly. Verify no normal CALL or five-second wait occurs first.
 3. With HappyTalky already visible on Watch, verify the Watch enters the locked Priority screen and auto-connects without a YES/NO choice.
 4. Verify Watch has no Decline/END control in the activity, incoming notification, or active-call notification.
 5. While the locked Priority call is incoming/connecting/live/reconnecting, try to reach Inbox, TEXT compose/TTS, TALK playback/recording, Find Phone, and history actions. Verify the dedicated Priority screen owns the Watch UI and those secondary interactions cannot start. Press Home/crown and verify leaving the app does not end the call.
-6. Verify both Phone and Watch give one short haptic when live audio is actually established. Briefly disrupt and restore the route inside reconnect grace; verify reconnection does not repeatedly replay the connection haptic.
-7. End the connected call from Phone. Verify both endpoints give the distinct end haptic, return to idle, and record Priority history.
-8. Start another locked Priority call and cancel it from Phone during connection. Repeat while Watch is transitioning into active state; verify the Watch still closes the call and does not leave an orphan live state. A call that never reached live audio must not give the completed-call end haptic.
-9. Background HappyTalky on Watch and start locked Priority. Verify the persistent Priority/call presentation appears and, on the supported AndroidX Core-Telecom path, the Watch answers and connects without manually opening HappyTalky. The background Data Layer listener must not directly start a microphone foreground service; Telecom owns the platform call lifecycle before HappyTalky starts its PCM transport.
-10. If Core-Telecom is unavailable or rejects the call, verify the visible-Activity fallback remains usable instead of silently claiming background audio.
-11. During an active locked Priority call, interrupt the route long enough to exceed reconnect grace and verify `DISCONNECTED` is still allowed as the failure exit and gives the active-call end haptic.
+6. Verify both Phone and Watch give one short haptic when live audio is actually established.
+7. While the Priority call is live, press Home/crown on Watch. Speak into the Watch and verify Phone still receives Watch audio; verify Watch still receives Phone audio. Reopen HappyTalky and confirm the same call remains live.
+8. Briefly disrupt and restore the route inside reconnect grace while Watch remains backgrounded; verify bidirectional audio returns and reconnection does not repeatedly replay the connection haptic.
+9. End the connected call from Phone. Verify both endpoints give the distinct end haptic, return to idle, and record Priority history.
+10. Start another locked Priority call and cancel it from Phone during connection. Repeat while Watch is transitioning into active state; verify the Watch still closes the call and does not leave an orphan live state. A call that never reached live audio must not give the completed-call end haptic.
+11. Background HappyTalky on Watch and start locked Priority. Verify the persistent Priority/call presentation appears and, on the supported AndroidX Core-Telecom path, the Watch answers and connects without manually opening HappyTalky. The background Data Layer listener must not directly start a microphone foreground service; Telecom owns the platform call lifecycle before HappyTalky starts its PCM transport.
+12. If Core-Telecom is unavailable or rejects the call, verify the visible-Activity fallback remains usable instead of silently claiming background audio.
+13. During an active locked Priority call, interrupt the route long enough to exceed reconnect grace and verify `DISCONNECTED` is still allowed as the failure exit and gives the active-call end haptic.
+
+### Background microphone retention
+
+1. Start a normal CALL from Watch while HappyTalky is visible; once live, press Home/crown and verify both Watch→Phone and Phone→Watch audio continue.
+2. Repeat with a normal incoming CALL answered from its notification, leaving HappyTalky backgrounded after answering; verify both directions continue.
+3. Start a normal CALL from Phone, background Phone after live audio attaches, and verify both directions continue.
+4. Repeat the Watch background test through one reconnect cycle and verify Watch microphone capture returns with playback.
+5. A one-way result where playback continues but the backgrounded endpoint stops transmitting is a failure even if the call state still says LIVE.
 
 ### Route change / reconnect
 

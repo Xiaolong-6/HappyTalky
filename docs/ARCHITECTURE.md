@@ -17,7 +17,7 @@ The conversation model includes **TEXT** as a secondary message type so text/emo
 - `mobile`: Android phone Compose Material 3 activity and phone-specific interaction design.
 - `wear`: Wear Compose Material 3 activity and round-screen interaction design.
 
-Both application modules use application ID `com.xiaolong.happytalky` and must be signed identically.
+Both application modules use application ID `com.xldev.happytalky` and must be signed identically.
 
 ## Conversation persistence
 
@@ -55,6 +55,8 @@ Each endpoint also publishes persistent metadata at:
 `/happytalky/device-info/<stable-device-id>`
 
 The payload contains the endpoint role, manufacturer/model, app version, protocol version, supported feature capabilities, and a publication timestamp. A stable app-scoped UUID identifies the endpoint across ordinary Data Layer reconnects. Peer metadata is accepted only when it is at least as fresh as the cached snapshot, so legacy persistent DataItems from an older install cannot overwrite current capabilities. `Node.displayName` is retained only as a human-readable fallback while the persistent device-info item has not arrived.
+
+Publishing alone is not treated as a sufficient refresh mechanism after an app upgrade. When a reachable peer is detected, HappyTalky sends `/happytalky/device-info/request`; the peer republishes its current device-info item with a fresh timestamp. The Activity also requests peer metadata whenever reachability is refreshed. This prevents an otherwise healthy Phone/Watch link from remaining gated by stale cached capabilities when the devices stayed connected through an upgrade.
 
 This lets presentation use labels such as `Watch · Pixel Watch 3` and lets later protocol features be gated by advertised capabilities instead of assuming both endpoints were upgraded simultaneously.
 
@@ -106,7 +108,7 @@ Locked Priority CALL is a separate immediate Phone-to-Watch request. It is not a
 - Locked Priority also owns the Watch interaction surface while incoming/connecting/live/reconnecting: Inbox, TEXT compose/TTS, TALK recording/playback, Find Phone, and history actions cannot take focus or start competing audio. Core guards reject Watch TEXT and TALK playback if an already-open secondary surface tries to complete an action during the locked call.
 - If Phone CANCEL races with Watch auto-answer, Watch accepts the Phone cancellation even after the local state has already moved from incoming to active.
 - Route failure, process/system failure, or reconnect timeout can still terminate the call and persist `DISCONNECTED`.
-- Android 14+ treats `RECORD_AUDIO` as a while-in-use permission, so a background Data Layer listener does not start a microphone FGS directly. Locked Priority instead registers an incoming VoIP call through AndroidX Core-Telecom. Telecom owns the platform call lifecycle and foreground call execution; after `answer()` succeeds, HappyTalky starts its existing Data Layer PCM transport. The shared Wear `LiveCallService` declares both `microphone` and `phoneCall`; ordinary CALL starts it explicitly as `microphone`, while a Telecom-managed locked Priority session starts it explicitly as `phoneCall`. The visible Watch Activity path remains a fallback when Telecom is unavailable or cannot add the call.
+- Android 14+ treats `RECORD_AUDIO` as a while-in-use permission, so a background Data Layer listener does not start a microphone FGS directly. Locked Priority instead registers an incoming VoIP call through AndroidX Core-Telecom. Telecom owns the platform call lifecycle and foreground call execution; after `answer()` succeeds, HappyTalky starts its existing Data Layer PCM transport. The shared Wear `LiveCallService` declares both `microphone` and `phoneCall`. Every live call keeps the runtime `microphone` foreground-service type because HappyTalky owns the `AudioRecord` capture. A Telecom-managed locked Priority session adds `phoneCall` rather than replacing `microphone`, so pressing Home does not let the audio framework silence Watch capture while the Telecom call remains active. The visible Watch Activity path remains a fallback when Telecom is unavailable or cannot add the call.
 - CALL history stores `PRIORITY` mode so these calls remain auditable.
 
 The normal CALL lifecycle remains:

@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    namespace = "com.xiaolong.happytalky.wear"
+    namespace = "com.xldev.happytalky.wear"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.xiaolong.happytalky"
+        applicationId = "com.xldev.happytalky"
         minSdk = 30
         targetSdk = 36
-        versionCode = 8
-        versionName = "0.4.2"
+        versionCode = 9
+        versionName = "0.4.3"
     }
 
     buildFeatures {
