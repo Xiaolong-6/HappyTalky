@@ -18,6 +18,7 @@ Use [DEPLOY.md](DEPLOY.md) for the acceptance procedure. Update this file only w
 | Area | Automated / CI | Physical device | Notes |
 | --- | --- | --- | --- |
 | Phone + Watch debug build | **Passed** | N/A | Core/Wear unit tests, both APK builds and Compose screenshot rendering run in Android CI. |
+| Google Play release-bundle build | **Passed** | N/A | CI builds both release AABs with one ephemeral CI-only signing identity to exercise release configuration. Production signing material is never used or stored in CI. |
 | Normal CALL / TALK / TEXT core flows | **Passed** for checked-in automated coverage | Manual acceptance remains release-dependent | Use the full device checklist in DEPLOY; do not infer audio/radio quality from CI. |
 | Locked Priority CALL, including background Core-Telecom path | **Passed** for policy/build/screenshot coverage | **Retest pending** | A physical test found Watch microphone capture could be silenced after pressing Home while downlink playback continued. The runtime foreground-service policy now keeps `microphone` and adds `phoneCall` for Telecom-managed Priority; bidirectional background audio and reconnect must be retested on hardware. |
 | Find Watch (Phone -> Watch BLE RSSI) | **Passed** | **Passed — basic end-to-end scope** | Qualitative proximity/trend only; no exact distance or direction claim. |

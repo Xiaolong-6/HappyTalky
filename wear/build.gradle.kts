@@ -6,6 +6,10 @@ plugins {
     id("com.android.compose.screenshot")
 }
 
+val appVersionName = providers.gradleProperty("appVersionName").get()
+val appVersionSequence = providers.gradleProperty("appVersionSequence").get().toInt()
+require(appVersionSequence in 1..9_999_999) { "appVersionSequence must be between 1 and 9,999,999" }
+
 val releaseSigningProperties = Properties().apply {
     val propertiesFile = rootProject.file("signing.properties")
     if (propertiesFile.isFile) {
@@ -36,8 +40,8 @@ android {
         applicationId = "com.xldev.happytalky"
         minSdk = 30
         targetSdk = 36
-        versionCode = 9
-        versionName = "0.4.3"
+        versionCode = 20_000_000 + appVersionSequence
+        versionName = appVersionName
     }
 
     signingConfigs {

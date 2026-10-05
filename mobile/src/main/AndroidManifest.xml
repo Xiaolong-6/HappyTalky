@@ -18,7 +18,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
 
     <uses-feature android:name="android.hardware.microphone" android:required="true" />
-    <uses-feature android:name="android.hardware.type.watch" android:required="false" />
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
 
     <application

@@ -66,6 +66,15 @@ jobs:
         shell: bash
         run: gradle --no-daemon :core:testDebugUnitTest :wear:testDebugUnitTest :mobile:assembleDebug :wear:assembleDebug
 
+      - name: Build Play release bundles (CI signing smoke test)
+        shell: bash
+        run: |
+          export HAPPYTALKY_RELEASE_STORE_FILE="$HOME/.android/debug.keystore"
+          export HAPPYTALKY_RELEASE_STORE_PASSWORD="android"
+          export HAPPYTALKY_RELEASE_KEY_ALIAS="androiddebugkey"
+          export HAPPYTALKY_RELEASE_KEY_PASSWORD="android"
+          gradle --no-daemon :mobile:bundleRelease :wear:bundleRelease
+
       - name: Render UI screenshot baselines
         shell: bash
         run: gradle --no-daemon :mobile:updateDebugScreenshotTest :wear:updateDebugScreenshotTest

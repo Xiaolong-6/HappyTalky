@@ -1,6 +1,6 @@
 # Deploy HappyTalky
 
-HappyTalky installs as two matching APKs built from the same commit. The authoritative app version is defined in `mobile/build.gradle.kts` and `wear/build.gradle.kts`; this document intentionally does not duplicate mutable version metadata.
+HappyTalky installs as two matching APKs built from the same commit. The authoritative shared version name and release sequence are defined in root `gradle.properties`; Phone and Wear derive distinct Play version codes from that sequence. This document intentionally does not duplicate mutable version metadata.
 
 Current CI-versus-hardware evidence is tracked separately in [VALIDATION.md](VALIDATION.md).
 
@@ -268,11 +268,21 @@ Build both matching release APKs from the same commit:
 gradle :mobile:assembleRelease :wear:assembleRelease
 ~~~
 
+For Google Play, build the two independent signed app bundles:
+
+~~~text
+gradle :mobile:bundleRelease :wear:bundleRelease
+~~~
+
+Upload the mobile AAB on the mobile track and the Wear AAB on the dedicated Wear OS track. Do not try to embed the Wear app in the phone AAB on AGP 9.x. See [PLAY_RELEASE.md](PLAY_RELEASE.md).
+
 Outputs:
 
 ~~~text
 mobile/build/outputs/apk/release/mobile-release.apk
 wear/build/outputs/apk/release/wear-release.apk
+mobile/build/outputs/bundle/release/mobile-release.aab
+wear/build/outputs/bundle/release/wear-release.aab
 ~~~
 
 Release tasks intentionally fail when signing material is missing or the configured keystore path does not exist. Debug builds and the rolling debug CI release do not require the private release key.

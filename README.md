@@ -98,12 +98,15 @@ They must also use matching signing identities for Wear OS Data Layer communicat
 
 The fastest development path is the rolling `debug-main` release, which contains matching Phone and Watch APKs built from the same commit. PRs use one rolling `debug-pr-<number>` prerelease and those temporary releases/tags are removed after merge.
 
+Production Google Play delivery uses two independently uploaded AABs under the same Play listing: the mobile bundle on the mobile track and the Wear bundle on the dedicated Wear OS track. AGP 9.x no longer supports embedding the Wear app into the phone bundle. The two artifacts keep the same application ID and signing identity but use separate version-code ranges.
+
 See:
 
+- [Google Play release procedure](docs/PLAY_RELEASE.md)
 - [Deploy, install and manual acceptance](docs/DEPLOY.md)
 - [Debug distribution lifecycle](dist/README.md)
 
-The authoritative app version is defined in the Phone and Watch Gradle module configuration; documentation should not duplicate that number as mutable release metadata.
+The authoritative shared version name and release sequence are defined once in `gradle.properties`; the Phone and Watch modules derive distinct Play version codes from that sequence.
 
 ## Validation status
 
