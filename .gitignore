@@ -8,3 +8,8 @@ captures/
 .externalNativeBuild/
 .cxx/
 .DS_Store
+
+# Local Android release signing material
+signing.properties
+*.jks
+*.keystore

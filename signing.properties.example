@@ -1,0 +1,7 @@
+# Copy this file to signing.properties and replace every placeholder.
+# signing.properties is ignored by Git and must never be committed.
+# On Windows, prefer forward slashes in the absolute keystore path.
+storeFile=C:/path/to/xldev-happytalky-release.jks
+storePassword=REPLACE_WITH_KEYSTORE_PASSWORD
+keyAlias=happytalky
+keyPassword=REPLACE_WITH_KEY_PASSWORD

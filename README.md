@@ -94,7 +94,7 @@ Phone and Watch builds use the same application ID:
 
 `com.xldev.happytalky`
 
-They must also use matching signing identities for Wear OS Data Layer communication.
+They must also use matching signing identities for Wear OS Data Layer communication. Formal release builds read one shared root signing configuration so Phone and Watch cannot intentionally diverge; private signing material is not stored in the repository.
 
 The fastest development path is the rolling `debug-main` release, which contains matching Phone and Watch APKs built from the same commit. PRs use one rolling `debug-pr-<number>` prerelease and those temporary releases/tags are removed after merge.
 

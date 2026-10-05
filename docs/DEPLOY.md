@@ -232,6 +232,59 @@ The route label describes the local endpoint's active transport only. It must no
 11. Swipe a TEXT row horizontally while it is not being long-pressed and verify the existing Delete reveal still works without triggering TTS.
 12. Delete TEXT and CALL rows locally on Watch and verify this behaves as local history management, not remote recall. Delete a TALK row and verify its local audio file is removed as well.
 
+## Formal release signing
+
+Phone and Watch release builds must use the same signing certificate. The repository stores only the signing configuration contract; the keystore and passwords stay outside Git.
+
+For a local release build, copy the template and fill in your own values:
+
+~~~text
+copy signing.properties.example signing.properties
+~~~
+
+On Windows, use a forward-slash absolute path for `storeFile`, for example `C:/Users/you/Keys/xldev-happytalky-release.jks`.
+
+The local file uses these four values:
+
+~~~properties
+storeFile=C:/path/to/xldev-happytalky-release.jks
+storePassword=YOUR_KEYSTORE_PASSWORD
+keyAlias=happytalky
+keyPassword=YOUR_KEY_PASSWORD
+~~~
+
+Alternatively, CI or another secure environment can provide the same values without creating `signing.properties`:
+
+~~~text
+HAPPYTALKY_RELEASE_STORE_FILE
+HAPPYTALKY_RELEASE_STORE_PASSWORD
+HAPPYTALKY_RELEASE_KEY_ALIAS
+HAPPYTALKY_RELEASE_KEY_PASSWORD
+~~~
+
+Build both matching release APKs from the same commit:
+
+~~~text
+gradle :mobile:assembleRelease :wear:assembleRelease
+~~~
+
+Outputs:
+
+~~~text
+mobile/build/outputs/apk/release/mobile-release.apk
+wear/build/outputs/apk/release/wear-release.apk
+~~~
+
+Release tasks intentionally fail when signing material is missing or the configured keystore path does not exist. Debug builds and the rolling debug CI release do not require the private release key.
+
+To inspect the certificate fingerprint without exposing the private key:
+
+~~~text
+keytool -list -v -keystore xldev-happytalky-release.jks -alias happytalky
+~~~
+
+The SHA-256 certificate fingerprint must match the key registered for `com.xldev.happytalky`.
+
 ## Build locally
 
 Current build baseline:
