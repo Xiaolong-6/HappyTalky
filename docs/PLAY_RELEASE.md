@@ -83,6 +83,23 @@ The phone target SDK is 36. The Wear target SDK is also 36, which is above the c
 
 HappyTalky is a non-standalone Wear experience today. If core watch functionality later becomes fully usable without the companion phone, revisit the standalone declaration and the associated Play review requirements instead of merely flipping the manifest flag.
 
+## Play policy declarations
+
+Before a Play release can be promoted, complete any declarations surfaced under **Policy and programs > App content** for permissions present in the uploaded bundles.
+
+For HappyTalky, pay particular attention to:
+
+- **Full-screen intent:** the Phone app uses `USE_FULL_SCREEN_INTENT` for incoming CALL presentation. Google Play requires a declaration for apps targeting Android 14+; receiving phone/video calls is an allowed core-use category.
+- **Foreground services:** HappyTalky declares microphone foreground-service use for active calls, and Wear also declares the phone-call foreground-service type for the Core-Telecom path. The Play declaration should describe these as user-visible real-time calling behavior.
+
+Do not describe Priority CALL as a hidden monitoring or background-recording feature. Its Play declaration should match the product contract: an explicit Phone-initiated call with visible ongoing-call state, subject to Android platform restrictions.
+
+## Personal-account production gate
+
+For a newly created personal Play developer account, Production remains locked until the app completes a closed test with at least **12 testers continuously opted in for 14 days**, followed by a production-access application. Internal testing is still useful first, but it does not replace this closed-test requirement.
+
+Use the same HappyTalky listing and include both mobile and Wear coverage in the test plan where practical. Keep feedback and changes made during testing because the production-access application asks about test quality and production readiness.
+
 ## CI boundary
 
 Android CI builds both release AABs using the repository's cached debug keystore only as an **ephemeral release-configuration smoke test**. Those AABs are not production artifacts and are not uploaded to Google Play.
