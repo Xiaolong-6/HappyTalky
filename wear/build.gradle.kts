@@ -95,6 +95,7 @@ dependencies {
     implementation(project(":core"))
     implementation(composeBom)
     implementation("androidx.activity:activity-compose:1.13.0")
+    implementation("androidx.fragment:fragment-ktx:1.9.1")
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.ui:ui")
