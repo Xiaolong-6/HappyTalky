@@ -47,12 +47,12 @@
         </activity>
 
         <service
-            android:name="com.xiaolong.happytalky.core.LiveCallService"
+            android:name="com.xldev.happytalky.core.LiveCallService"
             android:exported="false"
             android:foregroundServiceType="microphone" />
 
         <service
-            android:name="com.xiaolong.happytalky.core.HappyTalkyListenerService"
+            android:name="com.xldev.happytalky.core.HappyTalkyListenerService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />

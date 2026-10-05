@@ -92,7 +92,7 @@ The project-specific UI contract lives in [docs/UI_GUIDELINES.md](docs/UI_GUIDEL
 
 Phone and Watch builds use the same application ID:
 
-`com.xiaolong.happytalky`
+`com.xldev.happytalky`
 
 They must also use matching signing identities for Wear OS Data Layer communication.
 

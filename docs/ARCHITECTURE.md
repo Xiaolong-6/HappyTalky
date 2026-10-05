@@ -17,7 +17,7 @@ The conversation model includes **TEXT** as a secondary message type so text/emo
 - `mobile`: Android phone Compose Material 3 activity and phone-specific interaction design.
 - `wear`: Wear Compose Material 3 activity and round-screen interaction design.
 
-Both application modules use application ID `com.xiaolong.happytalky` and must be signed identically.
+Both application modules use application ID `com.xldev.happytalky` and must be signed identically.
 
 ## Conversation persistence
 

@@ -30,7 +30,7 @@ GitHub Actions artifacts remain available as a secondary path.
 
 ## Rename cutover
 
-The package rename happened in **0.3.0**. Current `main` remains on `com.xiaolong.happytalky` and intentionally does not upgrade the old `com.xiaolong.happytalkie` install. Remove the old phone/watch app after installing a current build so two launcher entries and two Data Layer endpoints cannot be confused.
+The original package rename happened in **0.3.0**. The current application ID is `com.xldev.happytalky`; it does not upgrade installs using either previous ID (`com.xiaolong.happytalky` or `com.xiaolong.happytalkie`). Remove the old phone/watch app after installing a current build so two launcher entries and two Data Layer endpoints cannot be confused.
 
 ## Install on the Android phone
 
@@ -47,7 +47,7 @@ adb install -r HappyTalky-phone-debug.apk
 If Android reports a signing mismatch from an older experimental build:
 
 ~~~text
-adb uninstall com.xiaolong.happytalky
+adb uninstall com.xldev.happytalky
 adb install HappyTalky-phone-debug.apk
 ~~~
 
@@ -76,7 +76,7 @@ adb -s WATCH_IP:DEBUG_PORT install -r HappyTalky-watch-debug.apk
 If the existing watch build has a different signature:
 
 ~~~text
-adb -s WATCH_IP:DEBUG_PORT uninstall com.xiaolong.happytalky
+adb -s WATCH_IP:DEBUG_PORT uninstall com.xldev.happytalky
 adb -s WATCH_IP:DEBUG_PORT install HappyTalky-watch-debug.apk
 ~~~
 
